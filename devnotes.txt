@@ -1,0 +1,13 @@
+Leaving it off here for the night. Working on importing the CSV. Need to clean all the data and make functions for cleaning before pulling csv file into database! That is where ill have to start tomorrow...
+
+Clean price - Working 
+Product Name - Working
+Clean- Quantity - Working
+
+Everything working to create a database called inventory..
+Everything is cleaned but I dont really like the names of 
+things in the database...
+
+Create_list() is working.... But I have noticed an issue creating the list. There are several things in the csv that are duplicates.. 
+the first instance of them is being entered to the database but the later one is not updating as it is already in. So some code needs to be written to make
+sure that the newest product date gets entered into the database.
