@@ -6,9 +6,9 @@ import time
 def add_csv():
     with open('inventory.csv') as csvfile:
         data = csv.reader(csvfile)
-        header = next(data)
+        next(data)
         for row in data:
-            product_in_db = session.query(Product).filter(Product.product_name == row[0]).one_or_none()
+            product_in_db = session.query(Product).filter(Product.product_name == row[0]).order_by(Product.date_updated.desc()).first()
             if product_in_db == None:
                 product_name = row[0].replace('"', '')
                 product_price = clean_price(row[1])
@@ -17,6 +17,11 @@ def add_csv():
                 new_product = Product(product_name = product_name, product_price = product_price,
                                     product_quantity = product_quantity, date_updated = date_updated)
                 session.add(new_product)
+            elif product_in_db != None:
+                if product_in_db.date_updated < clean_date(row[3]):
+                    product_in_db.date_updated = clean_date(row[3])
+                    product_in_db.product_price = clean_price(row[1])
+                    product_in_db.product_quantity = clean_quantity(row[2])
             session.commit()
             
 
@@ -62,7 +67,7 @@ def clean_quantity(quantity_string):
         
 def clean_date(date_string):
     date_format = '%m/%d/%Y'
-    cleaned_date = datetime.strptime(date_string, date_format)
+    cleaned_date = datetime.strptime(date_string, date_format).date()
     return cleaned_date
 
 if __name__ == '__main__':
