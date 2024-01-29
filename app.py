@@ -28,18 +28,16 @@ def add_csv():
 
 def create_list():
     all_info = session.query(Product).all()
-
+    product_list = []
     for item in all_info:
-        product_list = []
-        product_dict = {'Product ID' : {item.product_id},
-                        'Product Name' : {item.product_name},
-                        'Product Price' : {item.product_price},
-                        'Product Quantity' : {item.product_quantity},
-                        'Date Updated' : {item.date_updated}
+        product_dict = {'Product ID' : item.product_id,
+                        'Product Name' : item.product_name,
+                        'Product Price' : item.product_price,
+                        'Product Quantity' : item.product_quantity,
+                        'Date Updated' : item.date_updated
                         }
         product_list.append(product_dict)
-        print(product_list)
-
+    return(product_list)
 
 def clean_price(price_string):
     try:cleaned_price = int(float(price_string.replace('$', '')) * 100)
@@ -69,6 +67,7 @@ def clean_date(date_string):
     date_format = '%m/%d/%Y'
     cleaned_date = datetime.strptime(date_string, date_format).date()
     return cleaned_date
+
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
