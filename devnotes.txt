@@ -15,3 +15,8 @@ sure that the newest product date gets entered into the database... ***** ERRORS
 Stupid add_csv is done.... Wow I hate this sometimes.. :) oh look the smily face is red in here. That makes me happy.
 
 Create_list() fixed... hopefully.. 
+
+view_product() working... seems to be great
+
+add_product() working... seems okay, might need to be checked a bit more. The errors are working and looping correctly. The only thing Im not happy with is 
+when I add a date it asks for month day year and then spits it out year month day or something like that. Look into it..

@@ -64,7 +64,7 @@ def clean_price(price_string):
         input('''
         \n******Price Error**********
         \rPlease input a valid price
-        \rPress Enter to try again''')
+        \rPress Enter to try again\n''')
     else:
         return cleaned_price
 
@@ -76,7 +76,7 @@ def clean_quantity(quantity_string):
         \n *****Quantity Error*****
         \rEnter a numerical value
         \rusing WHOLE numbers!
-        \rPress Enter to try again''')
+        \rPress Enter to try again\n''')
     else:
         return cleaned_quantity
         
@@ -107,19 +107,27 @@ def view_product():
                 print("\n")
             else:
                 query = session.query(Product).filter(Product.product_id == product_number).first()
-                print(f"\n**** There are {query.product_quantity} units of {query.product_name} in stock at a price of ${query.product_price / 100:.2f} each! This is as of {query.date_updated} ****\n")
+                print(f"\n**** There are {query.product_quantity} units of {query.product_name} in stock at a price of ${query.product_price / 100:.2f} each! This is as of Year/Month/Day {query.date_updated} ****\n")
         except: 
             print("That is not a valid option, please read the list/menu above and try again\n")
     app()
 
 def add_product():
-    add_name = input("What is the name of your product? Example: Juice - V8 Splash.  ")
-    add_price = input("What is the current price of this product? Example : $5.23  ")
-    add_quantity = input("How many units are you adding to inventory? Example : 32  ")
-
-    add_product = Product(product_name=(add_name), product_price = clean_price(add_price), product_quantity = clean_quantity(add_quantity), date_updated = (datetime.now))
+    add_name = input("\nWhat is the name of your product? Example: Juice - V8 Splash.  ")
+    add_price = None
+    while add_price == None:
+        add_price = clean_price(input("\nWhat is the current price of this product? Example : $5.23  "))
+    add_quantity = None
+    while add_quantity == None:
+        add_quantity = clean_quantity(input("\nHow many units are you adding to inventory? Example : 32  "))
+    todays_date = None
+    while todays_date == None:
+        todays_date = clean_date(input("\nWhat is todays date in this format (month/day/year) Example: 01/15/2018  "))
+    add_product = Product(product_name=(add_name), product_price = (add_price), product_quantity = (add_quantity), date_updated = (todays_date))
     session.add(add_product)
     session.commit()
+    input("Your item has been successfully added! Press enter to continue!")
+    app()
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
