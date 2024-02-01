@@ -1,5 +1,5 @@
 from models import (Base, session, Product, engine)
-from datetime import datetime
+from datetime import datetime, date
 import csv
 import time
 
@@ -81,9 +81,15 @@ def clean_quantity(quantity_string):
         return cleaned_quantity
         
 def clean_date(date_string):
-    date_format = '%m/%d/%Y'
-    cleaned_date = datetime.strptime(date_string, date_format).date()
-    return cleaned_date
+    cd = False
+    while cd == False:
+        try:
+            date_format = '%m/%d/%Y'
+            cleaned_date = datetime.strptime(date_string, date_format).date()
+            return cleaned_date
+        except ValueError:
+            print("That is not the correct date format")
+            cd = True
 
 def view_product():
     products = session.query(Product.product_id, Product.product_name).all()
@@ -128,6 +134,9 @@ def add_product():
     session.commit()
     input("Your item has been successfully added! Press enter to continue!")
     app()
+
+def backup_file():
+    pass
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
