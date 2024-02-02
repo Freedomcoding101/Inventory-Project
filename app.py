@@ -136,8 +136,19 @@ def add_product():
     app()
 
 def backup_file():
-    pass
+    inventory_list = create_list()
+    with open('backup.csv', 'a') as csvfile:
+        fieldnames = ['Product ID', 'Product Name', 'Product Price', 'Product Quantity', 'Date Updated']
+        invwriter = csv.DictWriter(csvfile, fieldnames= fieldnames)
+        invwriter.writeheader()
+        for row in inventory_list:
+            invwriter.writerow({'Product ID': row['Product ID'],
+                                    'Product Name': row['Product Name'],
+                                    'Product Price': row['Product Price'],
+                                    'Product Quantity': row['Product Quantity'],
+                                    'Date Updated': row['Date Updated']})
+    app()
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
-    
+    app()

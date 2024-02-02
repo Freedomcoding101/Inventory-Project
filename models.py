@@ -20,4 +20,3 @@ class Product(Base):
     def __repr__(self):
         return f'''Product ID: {self.product_id} Product Name: {self.product_name} Product Quantity: {self.product_quantity}
                 Product Price: {self.product_price} Date Updated: {self.date_updated}'''
-

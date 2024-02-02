@@ -19,4 +19,10 @@ Create_list() fixed... hopefully..
 view_product() working... seems to be great
 
 add_product() working... seems okay, might need to be checked a bit more. The errors are working and looping correctly. The only thing Im not happy with is 
-when I add a date it asks for month day year and then spits it out year month day or something like that. Look into it..
+when I add a date it asks for month day year and then spits it out year month day or something like that. Look into it.. Also need to work in
+errors for the date..
+
+fixed the date issue with the errors in the date. 
+
+****** havent looked into the date issue two comments above yet.. Look into it later when I am not so tired.
+
