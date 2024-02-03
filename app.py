@@ -21,7 +21,9 @@ def app():
         backup_file()
     elif customer_input.lower() == "exit":
         exit()
-    else: input("That is not a valid answer. Please re read the menu and enter an option from above. Press Enter to try again.  ")
+    else:
+        input("That is not a valid answer. Please re read the menu and enter an option from above. Press Enter to try again.  ")
+        app()
 
 def add_csv():
     with open('inventory.csv') as csvfile:
@@ -130,8 +132,19 @@ def add_product():
     while todays_date == None:
         todays_date = clean_date(input("\nWhat is todays date in this format (month/day/year) Example: 01/15/2018  "))
     add_product = Product(product_name=(add_name), product_price = (add_price), product_quantity = (add_quantity), date_updated = (todays_date))
-    session.add(add_product)
-    session.commit()
+    with open('inventory.csv') as csvfile:
+        data = csv.reader(csvfile)
+        next(data)
+        for row in data:
+            product_in_db = session.query(Product).filter(Product.product_name == row[0]).order_by(Product.date_updated.desc()).first()
+            if product_in_db == None:
+                session.add(add_product)
+            elif product_in_db != None:
+                if product_in_db.date_updated < todays_date:
+                    product_in_db.date_updated = todays_date
+                    product_in_db.product_price = add_price
+                    product_in_db.product_quantity = add_quantity
+            session.commit()
     input("Your item has been successfully added! Press enter to continue!")
     app()
 
@@ -151,4 +164,5 @@ def backup_file():
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
+    add_csv()
     app()
