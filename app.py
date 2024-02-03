@@ -5,7 +5,7 @@ import time
 
 
 def app():
-    customer_input = input ('''
+    customer_input = input('''
     \n**Inventory Management System**
     \rType "v" to view product
     \rType "a" to add product
@@ -24,6 +24,7 @@ def app():
     else:
         input("That is not a valid answer. Please re read the menu and enter an option from above. Press Enter to try again.  ")
         app()
+
 
 def add_csv():
     with open('inventory.csv') as csvfile:
@@ -45,20 +46,21 @@ def add_csv():
                     product_in_db.product_price = clean_price(row[1])
                     product_in_db.product_quantity = clean_quantity(row[2])
             session.commit()
-            
+
 
 def create_list():
     all_info = session.query(Product).all()
     product_list = []
     for item in all_info:
-        product_dict = {'Product ID' : item.product_id,
-                        'Product Name' : item.product_name,
-                        'Product Price' : item.product_price,
-                        'Product Quantity' : item.product_quantity,
-                        'Date Updated' : item.date_updated
+        product_dict = {'Product ID': item.product_id,
+                        'Product Name': item.product_name,
+                        'Product Price': item.product_price,
+                        'Product Quantity': item.product_quantity,
+                        'Date Updated': item.date_updated
                         }
         product_list.append(product_dict)
     return(product_list)
+
 
 def clean_price(price_string):
     try:cleaned_price = int(float(price_string.replace('$', '')) * 100)
@@ -69,6 +71,7 @@ def clean_price(price_string):
         \rPress Enter to try again\n''')
     else:
         return cleaned_price
+
 
 def clean_quantity(quantity_string):
     try:
@@ -81,7 +84,8 @@ def clean_quantity(quantity_string):
         \rPress Enter to try again\n''')
     else:
         return cleaned_quantity
-        
+
+
 def clean_date(date_string):
     cd = False
     while cd == False:
@@ -92,6 +96,7 @@ def clean_date(date_string):
         except ValueError:
             print("That is not the correct date format")
             cd = True
+
 
 def view_product():
     products = session.query(Product.product_id, Product.product_name).all()
@@ -120,8 +125,14 @@ def view_product():
             print("That is not a valid option, please read the list/menu above and try again\n")
     app()
 
+
 def add_product():
-    add_name = input("\nWhat is the name of your product? Example: Juice - V8 Splash.  ")
+    add_name = None
+    while add_name == None:
+        add_name = input("\nWhat is the name of your product? Example: Juice - V8 Splash.  ")
+        if add_name == "":
+            print("\nYour product must have a name!")
+            add_name = None
     add_price = None
     while add_price == None:
         add_price = clean_price(input("\nWhat is the current price of this product? Example : $5.23  "))
@@ -131,22 +142,21 @@ def add_product():
     todays_date = None
     while todays_date == None:
         todays_date = clean_date(input("\nWhat is todays date in this format (month/day/year) Example: 01/15/2018  "))
-    add_product = Product(product_name=(add_name), product_price = (add_price), product_quantity = (add_quantity), date_updated = (todays_date))
-    with open('inventory.csv') as csvfile:
-        data = csv.reader(csvfile)
-        next(data)
-        for row in data:
-            product_in_db = session.query(Product).filter(Product.product_name == row[0]).order_by(Product.date_updated.desc()).first()
-            if product_in_db == None:
-                session.add(add_product)
-            elif product_in_db != None:
-                if product_in_db.date_updated < todays_date:
-                    product_in_db.date_updated = todays_date
-                    product_in_db.product_price = add_price
-                    product_in_db.product_quantity = add_quantity
-            session.commit()
+#Check for double entries
+    double = session.query(Product).filter(Product.product_name == add_name).one_or_none()
+    if double == None:
+        add_product = Product(product_name=(add_name), product_price = (add_price), product_quantity = (add_quantity), date_updated = (todays_date))
+        session.add(add_product)
+
+    else:
+        double.product_price = add_price
+        double.product_quantity = add_quantity
+        double.date_updated = todays_date
+
+    session.commit()
     input("Your item has been successfully added! Press enter to continue!")
     app()
+
 
 def backup_file():
     inventory_list = create_list()
@@ -156,11 +166,12 @@ def backup_file():
         invwriter.writeheader()
         for row in inventory_list:
             invwriter.writerow({'Product ID': row['Product ID'],
-                                    'Product Name': row['Product Name'],
-                                    'Product Price': row['Product Price'],
-                                    'Product Quantity': row['Product Quantity'],
-                                    'Date Updated': row['Date Updated']})
+                                'Product Name': row['Product Name'],
+                                'Product Price': row['Product Price'],
+                                'Product Quantity': row['Product Quantity'],
+                                'Date Updated': row['Date Updated']})
     app()
+
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
