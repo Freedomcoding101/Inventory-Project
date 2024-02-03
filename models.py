@@ -3,10 +3,11 @@ from sqlalchemy import (create_engine, Column,
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///inventory.db', echo = False)
-Session = sessionmaker(bind = engine)
+engine = create_engine('sqlite:///inventory.db', echo=False)
+Session = sessionmaker(bind=engine)
 session = Session()
 Base = declarative_base()
+
 
 class Product(Base):
     __tablename__ = "products"
@@ -14,7 +15,7 @@ class Product(Base):
     product_id = Column(Integer, primary_key=True)
     product_name = Column('Product Name', String)
     product_quantity = Column('Product Quantity', Integer)
-    product_price = Column ('Product Price', Integer)
+    product_price = Column('Product Price', Integer)
     date_updated = Column('Date Updated', Date)
 
     def __repr__(self):
