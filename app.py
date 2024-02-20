@@ -123,8 +123,8 @@ def view_product():
             else:
                 query = session.query(Product).filter(Product.product_id == product_number).first()
                 print(f"\n**** There are {query.product_quantity} units of {query.product_name} in stock at a price of ${query.product_price / 100:.2f} each! This is as of Year/Month/Day {query.date_updated} ****\n")
-        except ValueError:
-            print("That is not a valid option, please read the list/menu above and try again\n")
+        except AttributeError:
+            print("\nThat is not a valid option, please read the list/menu above and try again!\n")
     app()
 
 
@@ -143,7 +143,7 @@ def add_product():
         add_quantity = clean_quantity(input("\nHow many units are you adding to inventory? Example : 32  "))
     todays_date = None
     while todays_date is None:
-        todays_date = clean_date(input("\nWhat is todays date in this format (month/day/year) Example: 01/15/2018  "))
+        todays_date = datetime.now()
     double = session.query(Product).filter(Product.product_name == add_name).one_or_none()
     if double is None:
         add_product = Product(product_name=(add_name), product_price=(add_price), product_quantity=(add_quantity), date_updated=(todays_date))
@@ -153,7 +153,7 @@ def add_product():
         double.product_quantity = add_quantity
         double.date_updated = todays_date
     session.commit()
-    input("Your item has been successfully added! Press enter to continue!")
+    input("\nYour item has been successfully added! Press enter to continue!")
     app()
 
 
