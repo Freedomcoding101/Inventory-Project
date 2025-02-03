@@ -62,14 +62,7 @@ Type b to create a backup of the inventory.
 
 Type exit to close the application.
 
-File Structure
 
-├── models.py       # Database models
-├── app.py          # Main application logic
-├── inventory.csv   # Initial product data
-├── backup.csv      # Exported backup file
-├── requirements.txt # Project dependencies
-├── README.md       # Project documentation
 
 What I Learned
 
